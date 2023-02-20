@@ -1,13 +1,15 @@
 const express = require("express");
 
-const { getCategories } = require("./controllers/categories-controllers");
+const {
+  getCategories,
+  getReviews,
+} = require("./controllers/categories-controllers");
 const { errorHandler } = require("./controllers/error-handlers");
 
 const app = express();
 
-app.use(express.json());
-
 app.get("/api/categories", getCategories);
+app.get("/api/reviews", getReviews);
 
 app.use(errorHandler);
 

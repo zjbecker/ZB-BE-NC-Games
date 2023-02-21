@@ -1,10 +1,16 @@
-comment_count which is the total count of all the comments with this
+6. GET /api/reviews/:review_id/comments
 
-review_id - you should make use of queries to the database in order to achieve this.
+Responds with:
 
-the reviews should be sorted by date in descending order.
+an array of comments for the given review_id of which each comment should have the following properties:
 
-select review_id, owner, count(review_id) AS review_count from reviews join comments using (review_id) GROUP BY REVIEW_ID
+- comment_id
+- votes
+- created_at
+- author
+- body
+- review_id
+  comments should be served with the most recent comments first
 
 1. Checkout to main (git checkout main)
 2. pull in from GitHubs main (git pull origin main)

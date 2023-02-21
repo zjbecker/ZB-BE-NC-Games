@@ -1,17 +1,10 @@
-3. GET /api/categories
+comment_count which is the total count of all the comments with this
 
-Responds with:
+review_id - you should make use of queries to the database in order to achieve this.
 
-an array of category objects, each of which should have the following properties:
-slug
-description
-As this is the first endpoint you will need to set up your testing suite.
+the reviews should be sorted by date in descending order.
 
-Errors handled.
-
-Errors to Consider - add errors to handle as items to the checklist
-
-- When you want to start a new task
+select review_id, owner, count(review_id) AS review_count from reviews join comments using (review_id) GROUP BY REVIEW_ID
 
 1. Checkout to main (git checkout main)
 2. pull in from GitHubs main (git pull origin main)

@@ -47,9 +47,7 @@ describe("app", () => {
               designer: expect.any(String),
               comment_count: expect.any(Number),
             });
-            expect(reviews).toBeSortedBy("created_at", {
-              descending: true,
-            });
+            expect(reviews).toBeSortedBy("created_at", { descending: true });
           });
         });
     });
@@ -70,15 +68,19 @@ describe("app", () => {
             votes: expect.any(Number),
             designer: expect.any(String),
           });
+          expect(review.owner).toBe("mallionaire");
+          expect(review.designer).toBe("Seymour Buttz");
           expect(review.review_id).toBe(5);
         });
     });
     it("400: responds with bad request when non valid id requested ", () => {
       return request(app)
-        .get("/api/reviews/NotAnIdToday")
+        .get("/api/reviews/not-a-valid-id")
         .expect(400)
         .then(({ body: error }) => {
-          expect(error).toMatchObject({ msg: expect.any(String) });
+          expect(error.msg).toBe(
+            'invalid input syntax for type integer: "not-a-valid-id"'
+          );
         });
     });
     it("404: responds with not found when requested a valid but non-existent review_id", () => {
@@ -86,17 +88,66 @@ describe("app", () => {
         .get("/api/reviews/999")
         .expect(404)
         .then(({ body: error }) => {
-          expect(error).toMatchObject({ msg: expect.any(String) });
+          expect(error.msg).toBe("id not found");
         });
     });
   });
+
+  describe("GET /api/reviews/:review_id/comments", () => {
+    it("200: responds with array of comments for the given review_id sorted: desc", () => {
+      return request(app)
+        .get("/api/reviews/3/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toHaveLength(3);
+          comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              review_id: expect.any(Number),
+              comment_id: expect.any(Number),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              author: expect.any(String),
+              body: expect.any(String),
+            });
+          });
+          expect(comments).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    it("200: responds with empty array when queried with valid review_id that has no comments in db", () => {
+      return request(app)
+        .get("/api/reviews/6/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toEqual([]);
+        });
+    });
+    it("400: responds with bad request when non valid id requested ", () => {
+      return request(app)
+        .get("/api/reviews/not-a-valid-id-2/comments")
+        .expect(400)
+        .then(({ body: error }) => {
+          expect(error.msg).toBe(
+            'invalid input syntax for type integer: "not-a-valid-id-2"'
+          );
+        });
+    });
+    it("404: responds with msg when sent a query with a valid but non-existent review_id", () => {
+      return request(app)
+        .get("/api/reviews/99/comments")
+        .expect(404)
+        .then(({ body: error }) => {
+          expect(error.msg).toBe("id not found");
+        });
+    });
+  });
+
   describe("Server Errors", () => {
     it("404: responds with a message when incorrect path entered", () => {
       return request(app)
         .get("/api/NOTcategories")
         .expect(404)
         .then(({ body: error }) => {
-          expect(error).toMatchObject({ msg: expect.any(String) });
+          expect(error).toMatchObject({ msg: "invalid path" });
         });
     });
   });

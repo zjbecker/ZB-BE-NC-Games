@@ -1,14 +1,16 @@
-5. GET /api/reviews/:review_id
+6. GET /api/reviews/:review_id/comments
 
-a review object, which should have the following properties:
-review_id
-title
-review_body
-designer
-review_img_url
-votes
-category
-owner
+Responds with:
+
+an array of comments for the given review_id of which each comment should have the following properties:
+
+- comment_id
+- votes
+- created_at
+- author
+- body
+- review_id
+  comments should be served with the most recent comments first
 
 1. Checkout to main (git checkout main)
 2. pull in from GitHubs main (git pull origin main)

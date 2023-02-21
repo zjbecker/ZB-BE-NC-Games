@@ -1,7 +1,7 @@
 exports.psqlErrorsHandler = (err, req, res, next) => {
   const { code, message } = err;
   if (code === "22P02") {
-    res.status(400).send({ msg: message || "Bad Request" });
+    res.status(400).send({ msg: message });
   } else {
     next(err);
   }
@@ -19,5 +19,5 @@ exports.customErrorsHandler = (err, req, res, next) => {
 };
 
 exports.serverErrors = (req, res, next) => {
-  res.status(404).send({ msg: "incorrect path: please try again" });
+  res.status(404).send({ msg: "invalid path" });
 };

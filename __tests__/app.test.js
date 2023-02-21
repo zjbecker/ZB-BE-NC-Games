@@ -8,9 +8,9 @@ beforeAll(() => seed(testData));
 
 afterAll(() => db.end());
 
-describe("/api/categories", () => {
-  describe("GET: 200: /api/categories", () => {
-    it("should return a 200 status and an array of category objects", () => {
+describe("app", () => {
+  describe("GET /api/categories", () => {
+    it("200: responds with an array of category objects", () => {
       return request(app)
         .get("/api/categories")
         .expect(200)
@@ -27,11 +27,8 @@ describe("/api/categories", () => {
         });
     });
   });
-});
-
-describe("/api/reviews", () => {
-  describe("GET: 200: /api/reviews", () => {
-    it("should return a 200 status and an array of review objects. Sorted by date created (descending)", () => {
+  describe("GET /api/reviews", () => {
+    it("200: responds with an array of review objects. Sorted by date created (descending)", () => {
       return request(app)
         .get("/api/reviews")
         .expect(200)
@@ -57,16 +54,50 @@ describe("/api/reviews", () => {
         });
     });
   });
-});
-
-//area for my generic errors
-describe("404: /api/incorrect-path", () => {
-  it("should return 404 status and message when incorrect path entered", () => {
-    return request(app)
-      .get("/api/NOTcategories")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("incorrect path: please try again");
-      });
+  describe("GET /api/reviews/:review_id", () => {
+    it("200: responds with review object of the requested review_id", () => {
+      return request(app)
+        .get("/api/reviews/5")
+        .expect(200)
+        .then(({ body: { review } }) => {
+          expect(review).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_body: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: expect.any(Number),
+            designer: expect.any(String),
+          });
+          expect(review.review_id).toBe(5);
+        });
+    });
+    it("400: responds with bad request when non valid id requested ", () => {
+      return request(app)
+        .get("/api/reviews/NotAnIdToday")
+        .expect(400)
+        .then(({ body: error }) => {
+          expect(error).toMatchObject({ msg: expect.any(String) });
+        });
+    });
+    it("404: responds with not found when requested a valid but non-existent review_id", () => {
+      return request(app)
+        .get("/api/reviews/999")
+        .expect(404)
+        .then(({ body: error }) => {
+          expect(error).toMatchObject({ msg: expect.any(String) });
+        });
+    });
+  });
+  describe("Server Errors", () => {
+    it("404: responds with a message when incorrect path entered", () => {
+      return request(app)
+        .get("/api/NOTcategories")
+        .expect(404)
+        .then(({ body: error }) => {
+          expect(error).toMatchObject({ msg: expect.any(String) });
+        });
+    });
   });
 });

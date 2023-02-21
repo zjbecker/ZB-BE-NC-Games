@@ -1,10 +1,14 @@
-comment_count which is the total count of all the comments with this
+5. GET /api/reviews/:review_id
 
-review_id - you should make use of queries to the database in order to achieve this.
-
-the reviews should be sorted by date in descending order.
-
-select review_id, owner, count(review_id) AS review_count from reviews join comments using (review_id) GROUP BY REVIEW_ID
+a review object, which should have the following properties:
+review_id
+title
+review_body
+designer
+review_img_url
+votes
+category
+owner
 
 1. Checkout to main (git checkout main)
 2. pull in from GitHubs main (git pull origin main)

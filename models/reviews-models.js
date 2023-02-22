@@ -20,11 +20,11 @@ exports.fetchReviewById = (reviewId) => {
       WHERE review_id = $1;`,
       [reviewId]
     )
-    .then(({ rowCount, rows: review }) =>
-      rowCount
+    .then(({ rowCount, rows: review }) => {
+      return rowCount
         ? review[0]
-        : Promise.reject({ msg: "id not found", status: 404 })
-    );
+        : Promise.reject({ msg: "id not found", status: 404 });
+    });
 };
 
 exports.updateReviewById = (reviewId, incVotes) => {

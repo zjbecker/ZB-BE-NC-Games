@@ -140,6 +140,98 @@ describe("app", () => {
         });
     });
   });
+  describe("POST /api/reviews/:review_id/comments", () => {
+    it("201: responds with the posted comment and should be correctly added to the db", () => {
+      const commentToPost = {
+        username: "philippaclaire9",
+        body: "fabulous day for testing",
+      };
+
+      return request(app)
+        .post("/api/reviews/3/comments")
+        .send(commentToPost)
+        .expect(201)
+        .then(({ body: { postedComment } }) => {
+          expect(postedComment).toMatchObject({
+            comment_id: 7,
+            review_id: 3,
+            author: "philippaclaire9",
+            created_at: expect.any(String),
+            votes: 0,
+          });
+        });
+    });
+    it("400: responds with bad request when queried with an invalid username", () => {
+      const commentToPost = {
+        username: undefined,
+        body: "fabulous day for testing",
+      };
+      return request(app)
+        .post("/api/reviews/3/comments")
+        .send(commentToPost)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("invalid username");
+        });
+    });
+    it("400: responds with bad request when queried with an invalid comment", () => {
+      const commentToPost = {
+        username: "Username",
+        3: "hi",
+      };
+      return request(app)
+        .post("/api/reviews/3/comments")
+        .send(commentToPost)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("invalid comment");
+        });
+    });
+    it("404: responds not found when valid but non existent username queried", () => {
+      const commentToPost = {
+        username: "NotAUser",
+        body: "fabulous day for testing",
+      };
+
+      return request(app)
+        .post("/api/reviews/3/comments")
+        .send(commentToPost)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("user not found");
+        });
+    });
+    it("400: responds with bad request when non valid review_id requested", () => {
+      const commentToPost = {
+        username: "philippaclaire9",
+        body: "fabulous day for testing",
+      };
+
+      return request(app)
+        .post("/api/reviews/not-a-valid-id/comments")
+        .send(commentToPost)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(
+            'invalid input syntax for type integer: "not-a-valid-id"'
+          );
+        });
+    });
+    it("404: responds with msg when sent a query with a valid but non-existent review_id", () => {
+      const commentToPost = {
+        username: "philippaclaire9",
+        body: "fabulous day for testing",
+      };
+
+      return request(app)
+        .post("/api/reviews/999/comments")
+        .send(commentToPost)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("id not found");
+        });
+    });
+  });
 
   describe("Server Errors", () => {
     it("404: responds with a message when incorrect path entered", () => {

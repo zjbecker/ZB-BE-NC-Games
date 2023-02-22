@@ -11,6 +11,11 @@ e.g.
 
 { inc_votes : -100} would decrement the current review's vote property by 100
 
+Request body accepts:
+
+an object with the following properties:
+username
+body
 Responds with:
 
 the updated review

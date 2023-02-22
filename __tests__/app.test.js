@@ -151,4 +151,16 @@ describe("app", () => {
         });
     });
   });
+  describe.only("PATCH /api/reviews/:review_id", () => {
+    it("200: responds with updated review", () => {
+      const patchToSend = { inc_votes: 100 };
+      return request(app)
+        .patch("/api/reviews/5")
+        .send(patchToSend)
+        .expect(200)
+        .then(({ body: reviewUpdated }) => {
+          console.log(reviewUpdated, "<<<test file");
+        });
+    });
+  });
 });

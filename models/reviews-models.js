@@ -26,3 +26,19 @@ exports.fetchReviewById = (reviewId) => {
         : Promise.reject({ msg: "id not found", status: 404 })
     );
 };
+
+exports.updateReviewById = (reviewId, incVotes) => {
+  if (!incVotes || typeof incVotes !== "number") {
+    return Promise.reject({ msg: "invalid vote increment", status: 400 });
+  } else {
+    return db
+      .query(
+        `UPDATE reviews
+       SET votes = votes + $1
+       WHERE review_id = $2
+       RETURNING *;`,
+        [incVotes, reviewId]
+      )
+      .then(({ rows }) => rows[0]);
+  }
+};

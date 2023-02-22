@@ -92,7 +92,6 @@ describe("app", () => {
         });
     });
   });
-
   describe("GET /api/reviews/:review_id/comments", () => {
     it("200: responds with array of comments for the given review_id sorted: desc", () => {
       return request(app)
@@ -154,6 +153,28 @@ describe("app", () => {
         .then(({ body: { postedComment } }) => {
           expect(postedComment).toMatchObject({
             comment_id: 7,
+            review_id: 3,
+            author: "philippaclaire9",
+            created_at: expect.any(String),
+            votes: 0,
+          });
+        });
+    });
+    it("201: responds with the posted comment and ignores added properties on sent object", () => {
+      const commentToPost = {
+        username: "philippaclaire9",
+        body: "fabulous day for testing",
+        another: "will not be needing this",
+        1: 100,
+      };
+
+      return request(app)
+        .post("/api/reviews/3/comments")
+        .send(commentToPost)
+        .expect(201)
+        .then(({ body: { postedComment } }) => {
+          expect(postedComment).toMatchObject({
+            comment_id: 8,
             review_id: 3,
             author: "philippaclaire9",
             created_at: expect.any(String),
@@ -232,7 +253,50 @@ describe("app", () => {
         });
     });
   });
-
+  describe.only("PATCH /api/reviews/:review_id", () => {
+    it("200: responds with updated review", () => {
+      const patchToSend = { inc_votes: 1000 };
+      return request(app)
+        .patch("/api/reviews/5")
+        .send(patchToSend)
+        .expect(200)
+        .then(({ body: { updatedReview } }) => {
+          expect(updatedReview).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_body: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: 1005,
+            designer: expect.any(String),
+          });
+        });
+    });
+    it("200: responds with updated review ignores added properties on sent object", () => {
+      const patchToSend = {
+        inc_votes: 1,
+        1: 100,
+        another: "should not be used",
+      };
+      return request(app)
+        .patch("/api/reviews/5")
+        .send(patchToSend)
+        .expect(200)
+        .then(({ body: { updatedReview } }) => {
+          expect(updatedReview).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_body: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: 1006,
+            designer: expect.any(String),
+          });
+        });
+    });
+  });
   describe("Server Errors", () => {
     it("404: responds with a message when incorrect path entered", () => {
       return request(app)
@@ -240,18 +304,6 @@ describe("app", () => {
         .expect(404)
         .then(({ body: error }) => {
           expect(error).toMatchObject({ msg: "invalid path" });
-        });
-    });
-  });
-  describe.only("PATCH /api/reviews/:review_id", () => {
-    it("200: responds with updated review", () => {
-      const patchToSend = { inc_votes: 100 };
-      return request(app)
-        .patch("/api/reviews/5")
-        .send(patchToSend)
-        .expect(200)
-        .then(({ body: reviewUpdated }) => {
-          console.log(reviewUpdated, "<<<test file");
         });
     });
   });

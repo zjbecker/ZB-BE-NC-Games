@@ -253,8 +253,8 @@ describe("app", () => {
         });
     });
   });
-  describe.only("PATCH /api/reviews/:review_id", () => {
-    it("200: responds with updated review", () => {
+  describe("PATCH /api/reviews/:review_id", () => {
+    it("200: responds with updated review : votes increased", () => {
       const patchToSend = { inc_votes: 1000 };
       return request(app)
         .patch("/api/reviews/5")
@@ -269,6 +269,25 @@ describe("app", () => {
             category: expect.any(String),
             review_img_url: expect.any(String),
             votes: 1005,
+            designer: expect.any(String),
+          });
+        });
+    });
+    it("200: responds with updated review : votes decreased", () => {
+      const patchToSend = { inc_votes: -3 };
+      return request(app)
+        .patch("/api/reviews/2")
+        .send(patchToSend)
+        .expect(200)
+        .then(({ body: { updatedReview } }) => {
+          expect(updatedReview).toMatchObject({
+            owner: expect.any(String),
+            title: expect.any(String),
+            review_body: expect.any(String),
+            review_id: expect.any(Number),
+            category: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: 2,
             designer: expect.any(String),
           });
         });
@@ -294,6 +313,41 @@ describe("app", () => {
             votes: 1006,
             designer: expect.any(String),
           });
+        });
+    });
+    it("400: responds with bad request when non valid review_id requested", () => {
+      const patchToSend = { inc_votes: 1000 };
+
+      return request(app)
+        .patch("/api/reviews/not-a-valid-id")
+        .send(patchToSend)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(
+            'invalid input syntax for type integer: "not-a-valid-id"'
+          );
+        });
+    });
+    it("404: responds with msg when sent a query with a valid but non-existent review_id", () => {
+      const patchToSend = { inc_votes: 1000 };
+
+      return request(app)
+        .patch("/api/reviews/999")
+        .send(patchToSend)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("id not found");
+        });
+    });
+    it("400: responds with msg when sent an invalid inc_votes property/key", () => {
+      const patchToSend = { inc_votes: "not valid" };
+
+      return request(app)
+        .patch("/api/reviews/3")
+        .send(patchToSend)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("invalid vote patch");
         });
     });
   });

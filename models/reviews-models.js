@@ -29,7 +29,7 @@ exports.fetchReviewById = (reviewId) => {
 
 exports.updateReviewById = (reviewId, incVotes) => {
   if (!incVotes || typeof incVotes !== "number") {
-    return Promise.reject({ msg: "invalid vote increment", status: 400 });
+    return Promise.reject({ msg: "invalid vote patch", status: 400 });
   } else {
     return db
       .query(

@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-exports.fetchReviews = () => {
+exports.fetchReviews = (category, sort_by = "date", order = "desc") => {
   return db
     .query(
       ` SELECT r.owner, r.title, r.review_id, r.category, r.review_img_url,

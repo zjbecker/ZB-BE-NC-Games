@@ -1,18 +1,9 @@
-7. POST /api/reviews/:review_id/comments
+FEATURE REQUEST
+The end point should also accept the following queries:
 
-Request body accepts:
-
-an object with the following properties:
-username
-body
-Responds with:
-
-the posted comment
-Note: the status code should be 201 which signifies that something was created
-
-Errors to Consider - add errors to handle as items to the checklist
-
-comment_id | body | review_id | author | votes | created_at
+category, which selects the reviews by the category value specified in the query. If the query is omitted the endpoint should respond with all reviews.
+sort_by, which sorts the articles by any valid column (defaults to date)
+order, which can be set to asc or desc for ascending or descending (defaults to descending)d | body | review_id | author | votes | created_at
 
 1. Checkout to main (git checkout main)
 2. pull in from GitHubs main (git pull origin main)

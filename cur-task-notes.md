@@ -1,18 +1,10 @@
-7. POST /api/reviews/:review_id/comments
+9. GET /api/users
 
-Request body accepts:
-
-an object with the following properties:
-username
-body
 Responds with:
-
-the posted comment
-Note: the status code should be 201 which signifies that something was created
-
-Errors to Consider - add errors to handle as items to the checklist
-
-comment_id | body | review_id | author | votes | created_at
+an array of objects, each object should have the following property:
+username
+name
+avatar_url
 
 1. Checkout to main (git checkout main)
 2. pull in from GitHubs main (git pull origin main)

@@ -5,6 +5,7 @@ const {
   reviewsControllers: { getReviews, getReviewById },
   errorControllers: { psqlErrorsHandler, customErrorsHandler, serverErrors },
   commentsControllers: { getCommentsById, postCommentsById },
+  usersControllers: { getUsers },
 } = require("./controllers");
 
 const app = express();
@@ -16,6 +17,7 @@ app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsById);
 app.post("/api/reviews/:review_id/comments", postCommentsById);
+app.get("/api/users", getUsers);
 
 app.use(psqlErrorsHandler);
 app.use(customErrorsHandler);

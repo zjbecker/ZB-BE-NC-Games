@@ -52,6 +52,24 @@ describe("app", () => {
         });
     });
   });
+  describe("GET /api/users", () => {
+    it("200: responds with an array of category objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body: { users } }) => {
+          expect(users).toBeInstanceOf(Array);
+          expect(users).toHaveLength(4);
+          users.forEach((user) => {
+            expect(user).toMatchObject({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            });
+          });
+        });
+    });
+  });
   describe("GET /api/reviews/:review_id", () => {
     it("200: responds with review object of the requested review_id", () => {
       return request(app)
@@ -92,7 +110,6 @@ describe("app", () => {
         });
     });
   });
-
   describe("GET /api/reviews/:review_id/comments", () => {
     it("200: responds with array of comments for the given review_id sorted: desc", () => {
       return request(app)
@@ -232,7 +249,6 @@ describe("app", () => {
         });
     });
   });
-
   describe("Server Errors", () => {
     it("404: responds with a message when incorrect path entered", () => {
       return request(app)

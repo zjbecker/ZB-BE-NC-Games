@@ -51,9 +51,9 @@ describe("app", () => {
           });
         });
     });
-    it.only("200: responds with an array of review objects. Sorted by date created (descending)", () => {
+    it.only("xxxxx: responds with an array of review objects. Sorted by date created (descending)", () => {
       return request(app)
-        .get("/api/reviews?c")
+        .get("/api/reviews")
         .expect(200)
         .then(({ body: { reviews } }) => {
           expect(reviews).toBeInstanceOf(Array);

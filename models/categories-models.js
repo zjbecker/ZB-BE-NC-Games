@@ -5,3 +5,13 @@ exports.fetchCategories = () => {
     return result.rows;
   });
 };
+
+exports.checkCategory = (category) => {
+  return db
+    .query("select * from categories where slug = $1;", [category])
+    .then(({ rowCount }) =>
+      rowCount
+        ? true
+        : Promise.reject({ msg: "category not found", status: 404 })
+    );
+};

@@ -3,10 +3,16 @@ const {
   fetchReviewById,
   updateReviewById,
 } = require("../models/reviews-models");
+const { checkCategory } = require("../models/categories-models");
 
 exports.getReviews = (req, res, next) => {
-  return fetchReviews()
-    .then((reviews) => {
+  const { category, sort_by, order } = req.query;
+
+  const checkCategoryProm = category ? checkCategory(category) : true;
+  const fetchReviewsProm = fetchReviews(category, sort_by, order);
+
+  return Promise.all([fetchReviewsProm, checkCategoryProm])
+    .then(([reviews]) => {
       res.status(200).send({ reviews });
     })
     .catch(next);

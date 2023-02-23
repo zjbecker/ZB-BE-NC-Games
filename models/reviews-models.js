@@ -46,8 +46,12 @@ exports.fetchReviews = (category, sort_by = "created_at", order = "desc") => {
 exports.fetchReviewById = (reviewId) => {
   return db
     .query(
-      `SELECT * FROM reviews
-      WHERE review_id = $1;`,
+      `SELECT r.owner, r.title, r.review_id, r.category, r.review_img_url, r.review_body,
+      r.created_at, r.votes, r.designer, COUNT(c.review_id)::int AS comment_count
+      FROM reviews r
+      LEFT JOIN comments c ON r.review_id = c.review_id
+      WHERE r.review_id = $1
+      GROUP BY r.review_id;`,
       [reviewId]
     )
     .then(({ rowCount, rows: review }) => {

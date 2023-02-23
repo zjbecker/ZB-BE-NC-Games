@@ -286,6 +286,7 @@ describe("app", () => {
         .expect(200)
         .then(({ body: { review } }) => {
           expect(review).toMatchObject({
+            comment_count: expect.any(Number),
             owner: expect.any(String),
             title: expect.any(String),
             review_body: expect.any(String),

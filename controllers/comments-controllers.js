@@ -1,6 +1,7 @@
 const {
   fetchCommentsById,
   addCommentById,
+  removeCommentById,
 } = require("../models/comments-models");
 
 const { fetchReviewById } = require("../models/reviews-models");
@@ -30,6 +31,15 @@ exports.postCommentsById = (req, res, next) => {
   return Promise.all([addComment, isValidReviewId])
     .then(([postedComment]) => {
       res.status(201).send({ postedComment });
+    })
+    .catch(next);
+};
+
+exports.deleteCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  return removeCommentById(comment_id)
+    .then((deletedYo) => {
+      res.status(204).send();
     })
     .catch(next);
 };

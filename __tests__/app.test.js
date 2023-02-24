@@ -579,6 +579,7 @@ describe("app", () => {
         });
     });
   });
+
   describe("Server Errors", () => {
     it("404: responds with a message when incorrect path entered", () => {
       return request(app)

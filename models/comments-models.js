@@ -39,3 +39,15 @@ exports.addCommentById = (reviewId, commentObj) => {
       });
   }
 };
+
+exports.removeCommentById = (commentId) => {
+  return db
+    .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [
+      commentId,
+    ])
+    .then(({ rowCount, rows }) => {
+      return rowCount
+        ? rows[0]
+        : Promise.reject({ msg: "comment_id not found", status: 404 });
+    });
+};

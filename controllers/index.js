@@ -1,3 +1,4 @@
+exports.apiControllers = require("./api-controllers");
 exports.categoriesControllers = require("./categories-controllers");
 exports.errorControllers = require("./error-handlers");
 exports.commentsControllers = require("./comments-controllers");

@@ -9,6 +9,27 @@ beforeAll(() => seed(testData));
 afterAll(() => db.end());
 
 describe("app", () => {
+  describe("GET /api", () => {
+    it("200: responds with endpoint JSON ", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body: { endpoints } }) => {
+          expect(endpoints).toMatchObject({
+            "GET /api": expect.any(Object),
+            "GET /api/categories": expect.any(Object),
+            "GET /api/reviews": expect.any(Object),
+            "GET /api/users": expect.any(Object),
+            "GET /api/reviews/:review_id": expect.any(Object),
+            "GET /api/reviews/:review_id/comments": expect.any(Object),
+            "POST /api/reviews/:review_id/comments": expect.any(Object),
+            "PATCH /api/reviews/:review_id": expect.any(Object),
+            "DELETE /api/comments/comment_id": expect.any(Object),
+          });
+        });
+    });
+  });
+
   describe("GET /api/categories", () => {
     it("200: responds with an array of category objects", () => {
       return request(app)
@@ -604,6 +625,7 @@ describe("app", () => {
         });
     });
   });
+
   describe("Server Errors", () => {
     it("404: responds with a message when incorrect path entered", () => {
       return request(app)

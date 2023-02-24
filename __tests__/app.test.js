@@ -481,6 +481,31 @@ describe("app", () => {
         });
     });
   });
+
+  describe("DELETE /api/comments/:comment_id", () => {
+    it("204: no content // comment should be removed from db", () => {
+      return request(app).delete("/api/comments/2").expect(204);
+    });
+    it("400: responds with msg when invalid comment_id requested", () => {
+      return request(app)
+        .delete("/api/comments/not-an-id")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(
+            'invalid input syntax for type integer: "not-an-id"'
+          );
+        });
+    });
+    it("404: responds with ms when valid but non existent comment id requested", () => {
+      return request(app)
+        .delete("/api/comments/45")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("comment_id not found");
+        });
+    });
+  });
+
   describe("PATCH /api/reviews/:review_id", () => {
     it("200: responds with updated review : votes increased", () => {
       const patchToSend = { inc_votes: 1000 };
